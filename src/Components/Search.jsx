@@ -1,12 +1,13 @@
 import React from 'react';
 
-class Search extends React.Component {
+export class Search extends React.Component {
     constructor()
     {
         super();
         this.state = {
             search: '',
         };
+        this.handleKey = this.handleKey.bind(this);
     }
 
     handleKey = (event) =>  {
@@ -38,4 +39,4 @@ class Search extends React.Component {
     }
 }
 
-export { Search };
+
