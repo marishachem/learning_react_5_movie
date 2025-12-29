@@ -19,7 +19,7 @@ export function Movie(props) {
         <div className="card-content">
             <span className="card-title activator grey-text text-darken-4">Card Title<i
                 className="material-icons right">{title}</i></span>
-            <p>{year}<span className="right">{type}</span></p>
+            <p>{year}<span className="right">{type} {id}</span></p>
         </div>
     </div>;
 }

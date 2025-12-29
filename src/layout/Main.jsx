@@ -4,12 +4,13 @@ import {Preloader} from '../Components/Preloader'
 import {Search} from '../Components/Search'
 
 
-
+const API_KEY = process.env.REACT_APP_API_KEY
 class Main extends React.Component {
     state = {
         movies: [],
         searchQuery: 'Alice',
-        filterType: 'all'
+        filterType: 'all',
+        loading:true,
     }
 
     componentDidMount() {
@@ -19,29 +20,30 @@ class Main extends React.Component {
     searchMovies = (str, type = 'all') => {
         const searchValue = str || 'Alice';
         this.setState({
+            loading: true ,
             searchQuery: searchValue,
             filterType: type
         });
 
-        // Используем searchValue в запросе
-        fetch(`http://www.omdbapi.com/?apikey=d6ae8aa0&s=${searchValue}${type !== 'all' ? `&type=${type}` : ''}`)
+        fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${searchValue}${type !== 'all' ? `&type=${type}` : ''}`)
             .then(res => res.json())
             .then(data => this.setState({
-                movies: data.Search || []  // всегда гарантируем массив
+                movies: data.Search || [],
+                loading:false
             }))
     }
 
 
 
     render() {
-        const {movies} = this.state;
+        const {movies,loading} = this.state;
         return (
             <main className = 'container content'>
                 <Search searchMovies={this.searchMovies} />
 
-                {movies.length > 0 ?
-                    <Movies movies={movies}/> :
-                    <Preloader/>
+                {loading?
+                    (<Preloader/>):
+                    (<Movies movies={movies}/>)
                 }
             </main>);
     }
