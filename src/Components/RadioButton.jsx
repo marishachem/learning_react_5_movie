@@ -13,7 +13,7 @@ export class RadioButton extends React.Component {
     render() {
         return (
             <form action="#">
-                <p>
+
                     <label>
                         <input
                             name="All"
@@ -22,8 +22,6 @@ export class RadioButton extends React.Component {
                             onChange = { () => this.handleTypeChange('') }/>
                         <span>All</span>
                     </label>
-                </p>
-                <p>
                     <label>
                         <input
                             name="movies"
@@ -32,8 +30,6 @@ export class RadioButton extends React.Component {
                             onChange = { () => this.handleTypeChange('movie')}/>
                         <span>movies</span>
                     </label>
-                </p>
-                <p>
                     <label>
                         <input
                             className="series"
@@ -44,8 +40,6 @@ export class RadioButton extends React.Component {
                         />
                         <span>series</span>
                     </label>
-                </p>
-
             </form>
         )
     }

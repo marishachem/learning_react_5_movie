@@ -2,57 +2,48 @@ import React from 'react'
 import {Movies} from '../Components/Movies'
 import {Preloader} from '../Components/Preloader'
 import {Search} from '../Components/Search'
-import {RadioButton} from '../Components/RadioButton'
+
 
 
 class Main extends React.Component {
     state = {
         movies: [],
         searchQuery: 'Alice',
-        filterType: '',
+        filterType: 'all'
     }
 
     componentDidMount() {
-        this.searchMovies('Alice')
+        this.searchMovies('Alice', 'all')
     }
 
-    searchMovies = (str) => {
-        const { filterType } = this.state;
-        let url = `http://www.omdbapi.com/?apikey=d6ae8aa0&s=${str}`;
-        if (filterType) {
-            url += `&type=${filterType}`;
-        }
+    searchMovies = (str, type = 'all') => {
+        const searchValue = str || 'Alice';
+        this.setState({
+            searchQuery: searchValue,
+            filterType: type
+        });
 
-        fetch(url)
+        // Используем searchValue в запросе
+        fetch(`http://www.omdbapi.com/?apikey=d6ae8aa0&s=${searchValue}${type !== 'all' ? `&type=${type}` : ''}`)
             .then(res => res.json())
-            .then(data => this.setState({ movies: data.Search }))
+            .then(data => this.setState({
+                movies: data.Search || []  // всегда гарантируем массив
+            }))
     }
 
-    filterMovies = (type) => {
-        const { searchQuery } = this.state;
-        let url = `http://www.omdbapi.com/?apikey=d6ae8aa0&s=${searchQuery}`;
 
-        if (type) {
-            url += `&Type=${type}`;
-        }
-        fetch(url)
-            .then(res => res.json())
-            .then(data => this.setState({ movies: data.Search || [] }))
-
-    }
 
     render() {
         const {movies} = this.state;
-        return <main className = 'container content'>
-            <Search searchMovies={this.searchMovies}/>
-            <RadioButton filterMovies={this.filterMovies}/>
+        return (
+            <main className = 'container content'>
+                <Search searchMovies={this.searchMovies} />
 
-            {movies.length > 0 ?
-                (<Movies movies={movies}/>
-                    ):<Preloader/>
-            }
-
-        </main>
+                {movies.length > 0 ?
+                    <Movies movies={movies}/> :
+                    <Preloader/>
+                }
+            </main>);
     }
 }
 
