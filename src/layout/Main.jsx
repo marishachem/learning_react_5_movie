@@ -4,12 +4,13 @@ import {Preloader} from '../Components/Preloader'
 import {Search} from '../Components/Search'
 import {RadioButton} from '../Components/RadioButton'
 
-
+const API_KEY = process.env.REACT_APP_API_KEY
 class Main extends React.Component {
     state = {
         movies: [],
         searchQuery: 'Alice',
         filterType: '',
+        loading:true,
     }
 
     componentDidMount() {
@@ -17,20 +18,21 @@ class Main extends React.Component {
     }
 
     searchMovies = (str) => {
+        this.setState({loading: true })
         const { filterType } = this.state;
-        let url = `http://www.omdbapi.com/?apikey=d6ae8aa0&s=${str}`;
+        let url = `http://www.omdbapi.com/?apikey=${API_KEY}&s=${str}`;
         if (filterType) {
             url += `&type=${filterType}`;
         }
 
         fetch(url)
             .then(res => res.json())
-            .then(data => this.setState({ movies: data.Search }))
+            .then(data => this.setState({ movies: data.Search,loading:false }))
     }
 
     filterMovies = (type) => {
         const { searchQuery } = this.state;
-        let url = `http://www.omdbapi.com/?apikey=d6ae8aa0&s=${searchQuery}`;
+        let url = `http://www.omdbapi.com/?apikey=${API_KEY}&s=${searchQuery}`;
 
         if (type) {
             url += `&Type=${type}`;
@@ -42,14 +44,14 @@ class Main extends React.Component {
     }
 
     render() {
-        const {movies} = this.state;
+        const {movies, loading} = this.state;
         return <main className = 'container content'>
             <Search searchMovies={this.searchMovies}/>
             <RadioButton filterMovies={this.filterMovies}/>
 
-            {movies.length > 0 ?
-                (<Movies movies={movies}/>
-                    ):<Preloader/>
+            {loading?
+                (<Preloader/>):
+                (<Movies movies={movies}/>)
             }
 
         </main>
