@@ -21,7 +21,6 @@ export class Search extends React.Component {
     }
 
     handleSearch = () => {
-        // Исправлено: this.state.type вместо this.state.value
         this.props.searchMovies(this.state.search, this.state.type);
     }
 
@@ -42,7 +41,7 @@ export class Search extends React.Component {
                         onKeyDown={(e) => this.handleKey(e)}
                     />
                     <button
-                        className="btn search-btn" onClick={ this.handleSearch}>
+                        className="btn search-btn" onClick={ this.handleSearch }>
                         Search
                     </button>
                 </div>

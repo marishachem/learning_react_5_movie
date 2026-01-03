@@ -33,14 +33,11 @@ class Main extends React.Component {
             }))
     }
 
-
-
     render() {
         const {movies,loading} = this.state;
         return (
             <main className = 'container content'>
                 <Search searchMovies={this.searchMovies} />
-
                 {loading?
                     (<Preloader/>):
                     (<Movies movies={movies}/>)
