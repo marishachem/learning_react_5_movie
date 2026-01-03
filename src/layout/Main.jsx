@@ -25,12 +25,14 @@ class Main extends React.Component {
             filterType: type
         });
 
-        fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${searchValue}${type !== 'all' ? `&type=${type}` : ''}`)
+        fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${searchValue}${type !== 'all' ? `&type=${type}` : ''}`)
             .then(res => res.json())
             .then(data => this.setState({
                 movies: data.Search || [],
                 loading:false
             }))
+            .catch(err => console.log(err));
+            this.setState({loading:false});
     }
 
     render() {
