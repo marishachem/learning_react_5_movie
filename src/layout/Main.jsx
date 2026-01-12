@@ -1,51 +1,54 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import {Movies} from '../Components/Movies'
 import {Preloader} from '../Components/Preloader'
 import {Search} from '../Components/Search'
 
 
 const API_KEY = process.env.REACT_APP_API_KEY
-class Main extends React.Component {
-    state = {
-        movies: [],
-        searchQuery: 'Alice',
-        filterType: 'all',
-        loading:true,
-    }
+export function Main() {
+    const [movies, setMovies] = useState([])
+    const [searchQuery, setSearchQuery] = useState('Alice')
+    const [filterType, setFilterType] = useState('all')
+    const [loading, setLoading] = useState(true)
 
-    componentDidMount() {
-        this.searchMovies('Alice', 'all')
-    }
-
-    searchMovies = (str, type = 'all') => {
-        const searchValue = str || 'Alice';
-        this.setState({
-            loading: true ,
-            searchQuery: searchValue,
-            filterType: type
-        });
-
-        fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${searchValue}${type !== 'all' ? `&type=${type}` : ''}`)
+    const searchMovies = (str, type = 'all') => {
+        setLoading(true);
+        setSearchQuery(str || 'Alice')
+        setFilterType(type)
+        fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${str || 'Alice'}${type !== 'all' ? `&type=${type}` : ''}`)
             .then(res => res.json())
-            .then(data => this.setState({
-                movies: data.Search || [],
-                loading:false
-            }))
-            .catch(err => console.log(err));
-            this.setState({loading:false});
+            .then(data => {
+                setMovies(data.Search || []);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.log(err);
+                setLoading(false)
+            });
     }
 
-    render() {
-        const {movies,loading} = this.state;
-        return (
-            <main className = 'container content'>
-                <Search searchMovies={this.searchMovies} />
-                {loading?
-                    (<Preloader/>):
-                    (<Movies movies={movies}/>)
-                }
-            </main>);
-    }
+    useEffect(() => {
+        setLoading(true);
+        fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${searchQuery}${filterType !== 'all' ? `&type=${filterType}` : ''}`)
+            .then(res => res.json())
+            .then(data => {
+                setMovies(data.Search || []);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.log(err);
+                setLoading(false)
+            });
+
+    },[]);
+
+    return (
+        <main className='container content'>
+            <Search searchMovies={searchMovies}/>
+            {loading ?
+                (<Preloader/>) :
+                (<Movies movies={movies}/>)
+            }
+        </main>)
 }
 
-export {Main}
